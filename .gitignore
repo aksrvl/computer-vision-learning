@@ -5,6 +5,7 @@
 *.mkv
 *.webm
 
+*.jpg
 # Python
 __pycache__/
 *.pyc
