@@ -1,0 +1,19 @@
+# Video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
