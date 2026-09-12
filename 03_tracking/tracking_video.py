@@ -48,6 +48,12 @@ while cap.isOpened():
                 state_pre = kf.predict()
                 kf.correct(measurement)
                 state_post = kf.statePost
+
+                for i in range(1, 10):
+                    future_x = state_post[0][0] + i*state_post[2][0]
+                    future_y = state_post[1][0] + i*state_post[3][0]
+                    cv.circle(frame, (int(future_x), int(future_y)), 5, (255, 0, 0), -1)
+
                 kalman_history[detection[3]].append((state_post[0][0], state_post[1][0]))
 
                 print(f"Predicted state {detection[0]}, ID {detection[3]}: ", state_pre)
