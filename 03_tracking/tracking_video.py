@@ -8,6 +8,7 @@ cap = cv.VideoCapture('./test-video.mp4')
 frame_count = 0
 history = {}
 kalman_filters = {} #store filters for every id
+kalman_history = {} 
 while cap.isOpened():
     success, frame = cap.read()
     if success:
@@ -39,6 +40,7 @@ while cap.isOpened():
                 kf.measurementNoiseCov = np.array([[1, 0], [0, 1]], np.float32) * 0.1
                 kf.statePost = np.array([[x_center], [y_center], [0], [0]], np.float32)
                 kalman_filters[detection[3]] = kf
+                kalman_history[detection[3]] = []
 
             else:
                 kf = kalman_filters[detection[3]]
@@ -46,6 +48,7 @@ while cap.isOpened():
                 state_pre = kf.predict()
                 kf.correct(measurement)
                 state_post = kf.statePost
+                kalman_history[detection[3]].append((state_post[0][0], state_post[1][0]))
 
                 print(f"Predicted state {detection[0]}, ID {detection[3]}: ", state_pre)
                 print("Corrected state: ", state_post)
@@ -54,6 +57,11 @@ while cap.isOpened():
         for track_id, positions in history.items():
             for i in range(0, len(positions)):
                 cv.circle(frame, (int(positions[i][0]), int(positions[i][1])), 5, (0, 255, 0), -1)
+
+        for track_id, positions in kalman_history.items():
+            for i in range(0, len(positions)):
+                cv.circle(frame, (int(positions[i][0]), int(positions[i][1])), 5, (0, 0, 255), -1)
+
         cv.imshow("YOLOv8 Tracking", frame)
 
         if cv.waitKey(1) == ord('q'):
